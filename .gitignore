@@ -1,0 +1,26 @@
+# Виртуальные окружения
+venv/
+.venv/
+
+# Python кеш
+__pycache__/
+*.pyc
+
+# IDE
+.idea/
+.vscode/
+
+# Секреты и окружения
+.env
+.env.local
+.env.docker
+
+# Celery beat файл
+celerybeat-schedule
+
+# Собранные статики и медиа
+staticfiles/
+media/
+
+# Логи
+*.log
