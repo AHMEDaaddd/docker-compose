@@ -1,175 +1,86 @@
-# Django + Docker Compose + Postgres + Redis + Celery
+README.md
+Django + DRF + Celery + Redis + PostgreSQL
+Полноценный backend-стек в Docker Compose
 
-Этот проект представляет собой учебный шаблон backend-инфраструктуры на базе **Django**, полностью упакованный в Docker, с поддержкой:
+Этот проект включает Django REST Framework, PostgreSQL, Redis, Celery Worker, Celery Beat, Stripe-оплату и автоматическую документацию API.
+Весь стек разворачивается одной командой через Docker Compose.
 
-- PostgreSQL  
-- Redis  
-- Celery  
-- Celery Beat  
-- Docker Compose  
-- .env конфигураций  
+🚀 Возможности проекта
 
-Данный стек позволяет легко запускать Django-проекты в продакшен-ориентированной архитектуре.
+Django + DRF API
 
----
+PostgreSQL — основная база данных
 
-## 🚀 Стек технологий
+Redis — брокер сообщений для Celery
 
-| Компонент | Описание |
-|----------|----------|
-| **Django** | Основной backend-фреймворк |
-| **PostgreSQL** | Основная база данных |
-| **Redis** | Message broker для Celery |
-| **Celery** | Асинхронные фоновые задачи |
-| **Celery Beat** | Планировщик периодических задач |
-| **Docker Compose** | Контейнеризация всех сервисов |
-| **Gunicorn (при необходимости)** | WSGI-сервер |
+Celery Worker — асинхронные задачи
 
----
+Celery Beat — планировщик периодических задач
 
-## 📁 Структура проекта
+Swagger / ReDoc документация
 
-project/
-│ manage.py
-│ requirements.txt
-│ docker-compose.yaml
-│ Dockerfile
-│ .env.example
-│
-├── config/
-│ ├── settings.py
-│ ├── celery.py
-│ ├── init.py
-│
-├── users/
-│ ├── models.py
-│ ├── tasks.py <-- Celery задачи пользователя
-│ ├── views.py
-│ ├── ...
-│
-└── staticfiles/
+Stripe — создание и оплата курсов
 
-yaml
-Копировать код
+Полностью изолированный Docker-стек
 
----
+📦 Установка
+1. Клонируйте репозиторий
+git clone https://github.com/AHMEDaaddd/docker-compose.git
 
-## 🔧 Настройка окружения
+2. cd C:\Users\balta\PycharmProjects\docker-compose
 
-### 1. Создайте файл `.env` на основе `.env.example`:
+2. Создайте файл .env в корне проекта
+DEBUG=True
+SECRET_KEY=your_secret_key
 
-```bash
-cp .env.example .env
-В .env должны быть переменные:
-
-ini
-Копировать код
-DB_NAME=django_db
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_HOST=db
-DB_PORT=5432
+POSTGRES_DB=your_db
+POSTGRES_USER=your_user
+POSTGRES_PASSWORD=your_password
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
 
 REDIS_HOST=redis
 REDIS_PORT=6379
 
-SECRET_KEY=your_secret_key_here
-DEBUG=True
-🐳 Запуск проекта через Docker
-1. Собрать контейнеры и запустить:
-bash
-Копировать код
+STRIPE_SECRET_KEY=your_stripe_key
+STRIPE_CURRENCY=usd
+
+🐳 Запуск через Docker Compose
+Старт:
 docker compose up --build
-Контейнеры включают:
 
-web — Django сервер
-
-db — PostgreSQL
-
-redis — Redis брокер
-
-celery_worker — Celery worker
-
-celery_beat — планировщик задач
-
-2. Открыть приложение:
-cpp
-Копировать код
-http://127.0.0.1:8000
-🛠️ Команды внутри контейнера
-Выполнить миграции:
-bash
-Копировать код
-docker compose exec web python manage.py migrate
-Создать суперпользователя:
-bash
-Копировать код
-docker compose exec web python manage.py createsuperuser
-Проверить, что Celery работает:
-bash
-Копировать код
-docker compose logs celery_worker
-Проверить Celery Beat:
-bash
-Копировать код
-docker compose logs celery_beat
-📨 Celery задачи
-Система асинхронных задач подключена через файл:
-
-arduino
-Копировать код
-config/celery.py
-Celery автоматически подхватывает задачи из:
-
-bash
-Копировать код
-users/tasks.py
-Пример задачи:
-
-python
-Копировать код
-@shared_task
-def send_habit_reminders():
-    print("Reminder sent!")
-Celery Beat выполняет задачи по расписанию, которое задаётся в settings.py, например:
-
-python
-Копировать код
-CELERY_BEAT_SCHEDULE = {
-    "send-reminders-every-minute": {
-        "task": "users.tasks.send_habit_reminders",
-        "schedule": 60,
-    }
-}
-🧪 Запуск Django без Docker (если нужно)
-bash
-Копировать код
-python -m venv .venv
-source .venv/bin/activate      # Linux/Mac
-.venv\Scripts\activate         # Windows
-
-pip install -r requirements.txt
-python manage.py runserver
-🧹 Полезные команды Docker
-Остановить и удалить контейнеры:
-bash
-Копировать код
+Остановка:
 docker compose down
-Пересобрать полностью:
-bash
-Копировать код
-docker compose down
-docker compose up --build
-📌 Что реализовано в рамках проекта
-✔ Полная Docker-инфраструктура
-✔ Django запущен в контейнере
-✔ PostgreSQL подключён через docker-compose
-✔ Redis работает как брокер
-✔ Celery worker + Celery beat подключены
-✔ .env вынесены в конфигурации
-✔ Поддержка миграций, статических файлов, сборки проекта
 
-📎 Автор
-Ахмед
-Учебный проект SkyPro
-GitHub: https://github.com/AHMEDaaddd
+
+Сервисы поднимаются автоматически: Django, Celery, Celery Beat, Redis и PostgreSQL.
+
+🔍 Проверка сервисов
+Компонент	Как проверить
+Django API	http://localhost:8000
+
+Swagger Docs	http://localhost:8000/api/docs/
+
+Логи Django	docker compose logs -f web
+Логи Celery	docker compose logs -f celery
+Логи Beat	docker compose logs -f celery_beat
+Redis	docker compose logs -f redis
+PostgreSQL	docker compose logs -f db
+💳 Stripe интеграция
+
+В .env должен быть ключ:
+
+STRIPE_SECRET_KEY=your_test_key
+
+
+Документация Stripe API:
+https://stripe.com/docs/api
+
+📘 Документация API
+
+Доступна после запуска:
+
+http://localhost:8000/api/docs/
+
+
+Включены все реализованные эндпоинты: курсы, уроки, подписки, пользователи, оплаты.
